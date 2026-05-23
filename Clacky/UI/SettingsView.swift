@@ -86,7 +86,7 @@ struct AboutView: View {
             Text("Compatible with Mechvibes sound packs.")
                 .font(.footnote)
                 .foregroundStyle(.secondary)
-            Link("github.com/clacky", destination: URL(string: "https://github.com")!)
+            Link("github.com/jasonzh0/Clacky", destination: URL(string: "https://github.com/jasonzh0/Clacky")!)
                 .font(.footnote)
             Spacer(minLength: 0)
         }
