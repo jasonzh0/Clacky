@@ -16,6 +16,3 @@ and `name` was normalized so the menu shows readable labels.
 Each pack is © its original contributor and distributed under the MIT
 license of the Mechvibes repository. To install additional community packs,
 drop them into `~/Library/Application Support/Clacky/SoundPacks/`.
-
-The `default-click` pack is synthesized at build time by
-`scripts/make_default_pack.py` and is original to this repository.

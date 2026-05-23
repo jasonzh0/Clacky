@@ -75,7 +75,7 @@ Clacky/
   ClackyApp.swift              # @main, MenuBarExtra + Settings scene
   Info.plist, *.entitlements
   Assets.xcassets/
-  Resources/SoundPacks/        # five bundled Mechvibes packs + a synthetic fallback
+  Resources/SoundPacks/        # five bundled Mechvibes packs
   Core/
     AppController.swift        # top-level coordinator
     KeyEventListener.swift     # CGEventTap wrapper
@@ -95,7 +95,6 @@ ClackyTests/
   SoundPackLoaderTests.swift
 scripts/
   fetch_default_packs.sh       # downloads bundled Mechvibes packs from upstream
-  make_default_pack.py         # regenerates the synthetic fallback pack
 project.yml                    # XcodeGen project spec
 SOUNDPACKS.md                  # attribution for bundled packs
 ```
@@ -120,6 +119,5 @@ MIT — see [LICENSE](LICENSE).
 
 ## Credits
 
-- Pack format compatibility & community library: [Mechvibes](https://github.com/hainguyents13/mechvibes) (MIT)
+- Pack format compatibility, bundled sound packs, and community library: [Mechvibes](https://github.com/hainguyents13/mechvibes) (MIT)
 - Inspiration: [Klack](https://tryklack.com)
-- Default click sound: synthesized at build time by `scripts/make_default_pack.py` (no third-party audio is vendored in this repo)
