@@ -4,16 +4,23 @@ import CoreGraphics
 
 /// Low-latency polyphonic player for Mechvibes sound packs.
 ///
-/// Architecture: one `AVAudioEngine`, a fixed pool of voices (each = player +
-/// varispeed) that share the main mixer. Every buffer is converted at pack-load
-/// time to a single canonical format so the audio graph and the buffers we
-/// schedule always agree — `AVAudioPlayerNode` raises an ObjC exception (and
-/// crashes the app) if you schedule a buffer whose channel count or sample rate
-/// doesn't match the player node's output format.
+/// Architecture: one `AVAudioEngine`, a fixed pool of `AVAudioPlayerNode`s that
+/// connect directly to the main mixer. Players are started once at engine boot
+/// and stay running — `play()` only calls `scheduleBuffer(.interrupts)`, never
+/// `stop()`/`play()`, which would otherwise force a stop/restart cycle every
+/// keystroke and dominate perceived latency.
+///
+/// Every buffer is converted at pack-load time to a single canonical format so
+/// the audio graph and the buffers we schedule always agree — `AVAudioPlayerNode`
+/// raises an ObjC exception (and crashes the app) if you schedule a buffer whose
+/// channel count or sample rate doesn't match the player node's output format.
+///
+/// Pitch jitter (`AVAudioUnitVarispeed`) is intentionally *not* in the chain:
+/// the unit adds real buffering latency and we'd rather feel responsive than
+/// have per-key pitch variation. Gain jitter is kept since it's free.
 final class AudioEngine {
     private struct Voice {
         let player: AVAudioPlayerNode
-        let varispeed: AVAudioUnitVarispeed
     }
 
     /// Canonical format for the audio graph and all loaded buffers. Stereo
@@ -106,6 +113,10 @@ final class AudioEngine {
             return
         }
 
+        // pitchJitter is intentionally unused — varispeed is no longer in the
+        // audio graph for latency reasons (see class doc).
+        _ = pitchJitter
+
         voiceQueue.async { [weak self] in
             guard let self else { return }
             let voice = self.voices[self.nextVoice]
@@ -113,11 +124,11 @@ final class AudioEngine {
 
             let jitterGain = 1.0 + Float.random(in: -gainJitter...gainJitter)
             voice.player.volume = max(0, min(1.2, jitterGain))
-            voice.varispeed.rate = 1.0 + Float.random(in: -pitchJitter...pitchJitter)
 
-            voice.player.stop()
+            // No stop()/play() cycle — players are kept running. `.interrupts`
+            // cancels any in-flight buffer on this voice and starts the new one
+            // at the next render quantum.
             voice.player.scheduleBuffer(buffer, at: nil, options: [.interrupts]) { }
-            if !voice.player.isPlaying { voice.player.play() }
         }
     }
 
@@ -125,16 +136,20 @@ final class AudioEngine {
         let format = Self.canonicalFormat
         for _ in 0..<voiceCount {
             let player = AVAudioPlayerNode()
-            let vari = AVAudioUnitVarispeed()
             engine.attach(player)
-            engine.attach(vari)
-            engine.connect(player, to: vari, format: format)
-            engine.connect(vari, to: engine.mainMixerNode, format: format)
-            voices.append(Voice(player: player, varispeed: vari))
+            engine.connect(player, to: engine.mainMixerNode, format: format)
+            voices.append(Voice(player: player))
         }
     }
 
     private func startEngine() {
+        // Hint that we'd like the engine to process in small chunks. macOS
+        // ultimately picks the hardware IO buffer size, but this nudges the
+        // engine's graph processing toward lower-latency callbacks. Safe even
+        // if the engine ignores it.
+        try? engine.outputNode.auAudioUnit.allocateRenderResources()
+        engine.outputNode.auAudioUnit.maximumFramesToRender = 256
+
         do {
             try engine.start()
             for voice in voices { voice.player.play() }
