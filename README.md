@@ -105,6 +105,11 @@ SOUNDPACKS.md                  # attribution for bundled packs
 xcodebuild test -project Clacky.xcodeproj -scheme Clacky -destination 'platform=macOS'
 ```
 
+## Releasing
+
+Tag-driven, fully automated on GitHub Actions — see [RELEASE.md](RELEASE.md).
+TL;DR: `make bump-patch && git tag vX.Y.Z && git push --tags`.
+
 ## Contributing
 
 Issues and PRs welcome. Please:

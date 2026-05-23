@@ -6,15 +6,34 @@ options:
   createIntermediateGroups: true
   defaultConfig: Debug
 
+configs:
+  Debug: debug
+  Release: release
+
 settings:
   base:
     MARKETING_VERSION: "0.1.0"
     CURRENT_PROJECT_VERSION: "1"
     SWIFT_VERSION: "5.10"
-    DEVELOPMENT_TEAM: ""
-    CODE_SIGN_STYLE: Automatic
-    CODE_SIGN_IDENTITY: "-"
     ENABLE_HARDENED_RUNTIME: YES
+  configs:
+    Debug:
+      CODE_SIGN_STYLE: Automatic
+      CODE_SIGN_IDENTITY: "-"
+      DEVELOPMENT_TEAM: ""
+      # Hardened runtime not strictly required for Debug; keeping on so dev
+      # builds catch any entitlement issues early.
+    Release:
+      # Manual signing — identity is supplied via xcodebuild CLI flags or env
+      # by the release script / GitHub Actions workflow:
+      #   CODE_SIGN_IDENTITY="Developer ID Application: ..."
+      #   DEVELOPMENT_TEAM="ABCDE12345"
+      # If those are not set the build falls back to ad-hoc signing, which
+      # works locally but won't pass Gatekeeper on other Macs.
+      CODE_SIGN_STYLE: Manual
+      CODE_SIGN_IDENTITY: "-"
+      DEVELOPMENT_TEAM: ""
+      OTHER_CODE_SIGN_FLAGS: "--timestamp"
 
 targets:
   Clacky:

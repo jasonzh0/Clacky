@@ -1,4 +1,4 @@
-name: Build & Test
+name: CI
 
 on:
   push:
@@ -8,42 +8,7 @@ on:
 
 jobs:
   build:
-    runs-on: macos-14
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Show Xcode version
-        run: xcodebuild -version
-
-      - name: Install XcodeGen
-        run: brew install xcodegen
-
-      - name: Generate Xcode project
-        run: xcodegen generate
-
-      - name: Build
-        run: |
-          set -o pipefail
-          xcodebuild \
-            -project Clacky.xcodeproj \
-            -scheme Clacky \
-            -configuration Debug \
-            -destination 'platform=macOS' \
-            CODE_SIGNING_ALLOWED=NO \
-            build | xcpretty || xcodebuild \
-              -project Clacky.xcodeproj \
-              -scheme Clacky \
-              -configuration Debug \
-              -destination 'platform=macOS' \
-              CODE_SIGNING_ALLOWED=NO \
-              build
-
-      - name: Test
-        run: |
-          set -o pipefail
-          xcodebuild test \
-            -project Clacky.xcodeproj \
-            -scheme Clacky \
-            -destination 'platform=macOS' \
-            CODE_SIGNING_ALLOWED=NO \
-            -enableCodeCoverage NO
+    uses: ./.github/workflows/build-workflow.yml
+    with:
+      upload-artifacts: false
+      release: false
