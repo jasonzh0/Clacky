@@ -1,6 +1,12 @@
-# Clacky
+<p align="center">
+  <img src="docs/icon.png" width="160" height="160" alt="Clacky app icon">
+</p>
 
-An open-source, native Swift macOS app that plays mechanical keyboard sounds as you type — a free, open alternative to [Klack](https://tryklack.com).
+<h1 align="center">Clacky</h1>
+
+<p align="center">
+  An open-source, native Swift macOS app that plays mechanical keyboard sounds as you type — a free, open alternative to <a href="https://tryklack.com">Klack</a>.
+</p>
 
 - Native SwiftUI menu-bar app, no Electron
 - Five [Mechvibes](https://github.com/hainguyents13/mechvibes) sound packs bundled out of the box (Cherry MX Blue / Brown / Black / Red, Topre Purple Hybrid)
