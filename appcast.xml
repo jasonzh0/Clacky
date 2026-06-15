@@ -1,0 +1,15 @@
+<?xml version="1.0" standalone="yes"?>
+<rss xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle" version="2.0">
+    <channel>
+        <title>Clacky</title>
+        <item>
+            <title>0.2.0</title>
+            <pubDate>Mon, 15 Jun 2026 00:57:07 +0000</pubDate>
+            <link>https://github.com/jasonzh0/Clacky</link>
+            <sparkle:version>14</sparkle:version>
+            <sparkle:shortVersionString>0.2.0</sparkle:shortVersionString>
+            <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
+            <enclosure url="https://github.com/jasonzh0/Clacky/releases/download/v0.2.0/Clacky-0.2.0-arm64.zip" length="13294454" type="application/octet-stream" sparkle:edSignature="quXRMr5be2Hzo6E54I8JoxewZjhhibln7LJhVI8nE7nk8+XpuyAOXc5NSsNoOUkc//6nf+dVHlY1IcNz4WafDg=="/>
+        </item>
+    </channel>
+</rss>
