@@ -32,8 +32,8 @@ final class AppController {
         reloadPacks()
         loadSelectedPack()
 
-        listener.onEvent = { [weak self] keyCode, isDown in
-            self?.handleKeyEvent(keyCode: keyCode, isDown: isDown)
+        listener.onEvent = { [weak self] keyCode, isDown, isRepeat in
+            self?.handleKeyEvent(keyCode: keyCode, isDown: isDown, isRepeat: isRepeat)
         }
 
         engine.setMasterVolume(Float(preferences.volume))
@@ -155,9 +155,14 @@ final class AppController {
         engine.loadPack(pack)
     }
 
-    private func handleKeyEvent(keyCode: CGKeyCode, isDown: Bool) {
+    private func handleKeyEvent(keyCode: CGKeyCode, isDown: Bool, isRepeat: Bool) {
         guard preferences.isEnabled else { return }
-        if !isDown && !preferences.playOnKeyUp { return }
+        guard KeystrokePolicy.shouldPlay(
+            isDown: isDown,
+            isRepeat: isRepeat,
+            ignoreKeyRepeat: preferences.ignoreKeyRepeat,
+            playOnKeyUp: preferences.playOnKeyUp
+        ) else { return }
         engine.play(
             keyCode: keyCode,
             pitchJitter: Float(preferences.pitchVariation),

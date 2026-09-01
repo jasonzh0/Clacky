@@ -19,7 +19,8 @@ final class KeyEventListener {
     }
 
     /// Called on the listener's background queue for every key event.
-    var onEvent: ((CGKeyCode, Bool) -> Void)?
+    /// `isRepeat` is true for macOS key-repeat (`keyboardEventAutorepeat`) while held.
+    var onEvent: ((CGKeyCode, Bool, Bool) -> Void)?
 
     private var eventTap: CFMachPort?
     private var runLoopSource: CFRunLoopSource?
@@ -41,7 +42,8 @@ final class KeyEventListener {
             let listener = Unmanaged<KeyEventListener>.fromOpaque(refcon).takeUnretainedValue()
             if type == .keyDown || type == .keyUp {
                 let code = CGKeyCode(event.getIntegerValueField(.keyboardEventKeycode))
-                listener.dispatch(keyCode: code, isDown: type == .keyDown)
+                let isRepeat = event.getIntegerValueField(.keyboardEventAutorepeat) != 0
+                listener.dispatch(keyCode: code, isDown: type == .keyDown, isRepeat: isRepeat)
             }
             return Unmanaged.passUnretained(event)
         }
@@ -88,9 +90,9 @@ final class KeyEventListener {
         thread = nil
     }
 
-    private func dispatch(keyCode: CGKeyCode, isDown: Bool) {
+    private func dispatch(keyCode: CGKeyCode, isDown: Bool, isRepeat: Bool) {
         queue.async { [weak self] in
-            self?.onEvent?(keyCode, isDown)
+            self?.onEvent?(keyCode, isDown, isRepeat)
         }
     }
 }

@@ -3,7 +3,6 @@ import SwiftUI
 struct MenuBarContent: View {
     @Environment(AppController.self) private var controller
     @Environment(Preferences.self) private var preferences
-    @Environment(\.openSettings) private var openSettings
 
     var body: some View {
         @Bindable var prefs = preferences
@@ -48,7 +47,7 @@ struct MenuBarContent: View {
         if !controller.hasAccessibilityPermission {
             Button("⚠️ Grant Accessibility Access…") {
                 controller.requestAccessibilityPermission()
-                openSettings()
+                SettingsOpener.open()
             }
         } else if controller.needsRestart {
             Button("⚠️ Restart Clacky to activate") {
@@ -61,9 +60,13 @@ struct MenuBarContent: View {
         }
 
         Button("Settings…") {
-            openSettings()
+            SettingsOpener.open()
         }
         .keyboardShortcut(",")
+
+        Button("Hide Menu Bar Icon") {
+            prefs.showMenuBarIcon = false
+        }
 
         Divider()
 

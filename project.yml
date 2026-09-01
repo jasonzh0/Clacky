@@ -104,6 +104,7 @@ targets:
         PRODUCT_BUNDLE_IDENTIFIER: com.clacky.ClackyTests
         BUNDLE_LOADER: $(TEST_HOST)
         TEST_HOST: $(BUILT_PRODUCTS_DIR)/Clacky.app/Contents/MacOS/Clacky
+        GENERATE_INFOPLIST_FILE: YES
 
 schemes:
   Clacky:

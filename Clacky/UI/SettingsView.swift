@@ -24,6 +24,8 @@ struct GeneralSettingsView: View {
         Form {
             Toggle("Enable typing sounds", isOn: $prefs.isEnabled)
             Toggle("Play sound on key release too", isOn: $prefs.playOnKeyUp)
+            Toggle("Ignore key repeat while held", isOn: $prefs.ignoreKeyRepeat)
+            Toggle("Show menu bar icon", isOn: $prefs.showMenuBarIcon)
             Toggle("Launch at login", isOn: Binding(
                 get: { prefs.launchAtLogin },
                 set: { newValue in
@@ -31,6 +33,11 @@ struct GeneralSettingsView: View {
                     LaunchAtLogin.setEnabled(newValue)
                 }
             ))
+            if !prefs.showMenuBarIcon {
+                Text("Clacky keeps running in the background. Open the app from Applications or Spotlight to show this window again.")
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+            }
         }
         .formStyle(.grouped)
     }

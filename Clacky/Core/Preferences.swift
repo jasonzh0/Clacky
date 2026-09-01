@@ -35,6 +35,14 @@ final class Preferences {
         didSet { defaults.set(launchAtLogin, forKey: Keys.launchAtLogin) }
     }
 
+    var ignoreKeyRepeat: Bool {
+        didSet { defaults.set(ignoreKeyRepeat, forKey: Keys.ignoreKeyRepeat) }
+    }
+
+    var showMenuBarIcon: Bool {
+        didSet { defaults.set(showMenuBarIcon, forKey: Keys.showMenuBarIcon) }
+    }
+
     private init() {
         defaults.register(defaults: [
             Keys.isEnabled: true,
@@ -43,7 +51,9 @@ final class Preferences {
             Keys.pitchVariation: 0.02,
             Keys.gainVariation: 0.06,
             Keys.playOnKeyUp: false,
-            Keys.launchAtLogin: false
+            Keys.launchAtLogin: false,
+            Keys.ignoreKeyRepeat: true,
+            Keys.showMenuBarIcon: true
         ])
         isEnabled = defaults.bool(forKey: Keys.isEnabled)
         volume = defaults.double(forKey: Keys.volume)
@@ -52,6 +62,8 @@ final class Preferences {
         gainVariation = defaults.double(forKey: Keys.gainVariation)
         playOnKeyUp = defaults.bool(forKey: Keys.playOnKeyUp)
         launchAtLogin = defaults.bool(forKey: Keys.launchAtLogin)
+        ignoreKeyRepeat = defaults.bool(forKey: Keys.ignoreKeyRepeat)
+        showMenuBarIcon = defaults.bool(forKey: Keys.showMenuBarIcon)
     }
 
     private enum Keys {
@@ -62,5 +74,7 @@ final class Preferences {
         static let gainVariation = "clacky.gainVariation"
         static let playOnKeyUp = "clacky.playOnKeyUp"
         static let launchAtLogin = "clacky.launchAtLogin"
+        static let ignoreKeyRepeat = "clacky.ignoreKeyRepeat"
+        static let showMenuBarIcon = "clacky.showMenuBarIcon"
     }
 }

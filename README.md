@@ -14,6 +14,8 @@
 - Low-latency polyphonic audio (`AVAudioEngine`, 16-voice pool)
 - Per-keystroke gain & pitch jitter for natural variation
 - Launch at login, global keystroke listener (Accessibility-permission-based, listen-only)
+- Ignores macOS key-repeat while a key is held (optional; on by default)
+- Optional hidden menu-bar icon — reopen Clacky from Applications or Spotlight to get Settings back
 - macOS 14 (Sonoma) and later, Apple Silicon & Intel
 
 > Clacky never records, transmits, or stores your keystrokes. The event tap only reads the key code so the engine knows which sound to play.
@@ -85,6 +87,7 @@ Clacky/
   Core/
     AppController.swift        # top-level coordinator
     KeyEventListener.swift     # CGEventTap wrapper
+    KeystrokePolicy.swift      # key-repeat / key-up play policy
     AudioEngine.swift          # AVAudioEngine voice pool
     SoundPack.swift            # Mechvibes-compatible models
     SoundPackLoader.swift      # bundle + Application Support discovery
@@ -92,6 +95,9 @@ Clacky/
     Preferences.swift          # @Observable, UserDefaults-backed
   Permissions/AccessibilityPermissions.swift
   System/LaunchAtLogin.swift
+  System/AppDelegate.swift     # reopen → Settings when the icon is hidden
+  System/SettingsOpener.swift
+  System/SettingsWindowController.swift
   UI/
     MenuBarContent.swift
     SettingsView.swift
@@ -99,6 +105,7 @@ Clacky/
 ClackyTests/
   KeycodeMapTests.swift
   SoundPackLoaderTests.swift
+  KeystrokePolicyTests.swift
 scripts/
   fetch_default_packs.sh       # downloads bundled Mechvibes packs from upstream
 project.yml                    # XcodeGen project spec

@@ -2,7 +2,9 @@ import SwiftUI
 
 @main
 struct ClackyApp: App {
+    @NSApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
     @State private var controller = AppController.shared
+    @State private var preferences = Preferences.shared
 
     init() {
         AppController.shared.start()
@@ -12,20 +14,15 @@ struct ClackyApp: App {
     }
 
     var body: some Scene {
-        MenuBarExtra {
+        @Bindable var prefs = preferences
+
+        MenuBarExtra(isInserted: $prefs.showMenuBarIcon) {
             MenuBarContent()
                 .environment(controller)
-                .environment(Preferences.shared)
+                .environment(preferences)
         } label: {
-            Label("Clacky", systemImage: Preferences.shared.isEnabled ? "keyboard.fill" : "keyboard")
+            Label("Clacky", systemImage: preferences.isEnabled ? "keyboard.fill" : "keyboard")
         }
         .menuBarExtraStyle(.menu)
-
-        Settings {
-            SettingsView()
-                .environment(controller)
-                .environment(Preferences.shared)
-                .frame(minWidth: 480, minHeight: 360)
-        }
     }
 }
